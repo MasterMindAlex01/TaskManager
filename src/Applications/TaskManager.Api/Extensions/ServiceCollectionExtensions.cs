@@ -10,6 +10,14 @@ namespace TaskManager.Api.Extensions;
 
 public static class ServiceCollectionExtensions
 {
+    internal static WebApplicationBuilder AddConfigurations(this WebApplicationBuilder builder)
+    {
+        var env = builder.Environment;
+        builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+        return builder;
+    }
+
     internal static IServiceCollection AddDatabase(
     this IServiceCollection services,
     IConfiguration configuration)
