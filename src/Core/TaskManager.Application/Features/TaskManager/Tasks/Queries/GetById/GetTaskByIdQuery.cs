@@ -21,7 +21,7 @@ internal class GetTaskByIdQueryHandler : IRequestHandler<GetTaskByIdQuery, Resul
 
     public async Task<Result<TaskResponse?>> Handle(GetTaskByIdQuery query, CancellationToken cancellationToken)
     {
-        var task = await _taskRepository.GetTaskByIdAsync(query.Id);
+        var task = await _taskRepository.GetTaskResponseByIdAsync(query.Id);
         return await Result<TaskResponse?>.SuccessAsync(task);
     }
 }

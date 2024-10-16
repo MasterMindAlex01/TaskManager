@@ -33,7 +33,7 @@ public class TaskRepository : ITaskRepository
         }).AsNoTracking().ToPaginatedListAsync(pagenNumber, pageSize);
     }
 
-    public async Task<TaskResponse?> GetTaskByIdAsync(Guid id)
+    public async Task<TaskResponse?> GetTaskResponseByIdAsync(Guid id)
     {
         return await _repository.Entities
             .Where(x => x.Id == id)
@@ -50,5 +50,30 @@ public class TaskRepository : ITaskRepository
                 Tag = x.Tag,
                 Title = x.Title,
             }).AsNoTracking().FirstOrDefaultAsync();
+    }
+
+    public async Task<List<TaskResponse>> GetTaskResponseByAssignedUserIdAsync(Guid userId)
+    {
+        return await _repository.Entities
+            .Where(x => x.AssignedTo == userId)
+            .Select(x => new TaskResponse
+            {
+                AssignedBy = x.AssignedBy.ToString(),
+                AssignedTo = x.AssignedTo.ToString(),
+                CreationDate = x.CreationDate,
+                Description = x.Description,
+                DueDate = x.DueDate,
+                Id = x.Id.ToString(),
+                Priority = x.Priority,
+                Status = x.Status,
+                Tag = x.Tag,
+                Title = x.Title,
+            }).AsNoTracking().ToListAsync();
+    }
+
+    public async Task<Domain.Tasks.Task?> GetTaskByIdAsync(Guid id)
+    {
+        return await _repository.Entities
+            .Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
     }
 }

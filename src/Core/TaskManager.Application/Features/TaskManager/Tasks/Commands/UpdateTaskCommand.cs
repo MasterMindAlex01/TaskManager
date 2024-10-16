@@ -54,7 +54,7 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Res
 
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
-            return await Result<Guid>.SuccessAsync(task.Id, "Task created");
+            return await Result<Guid>.SuccessAsync("Task update");
         }
         catch (Exception)
         {

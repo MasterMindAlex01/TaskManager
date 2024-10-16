@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Features.Identity.Users.Commands;
 using TaskManager.Application.Features.Identity.Users.Queries;
+using TaskManager.Shared.Authorization;
 
 namespace TaskManager.Api.Controllers;
 
-[Authorize(Roles = "Supervisor")]
+[Authorize(Roles = ConstantRoles.Administrator)]
 public class UsersController : BaseApiController
 {
     // GET: api/<Users>
@@ -64,6 +65,14 @@ public class UsersController : BaseApiController
     {
         command.UserId = id;
         var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
+    [Authorize(Roles = $"{ConstantRoles.Administrator},{ConstantRoles.Supervisor}")]
+    [HttpPost("{id}/tasks/{taskId}")]
+    public async Task<ActionResult> AssignTasksAsync(Guid id, Guid taskId)
+    {
+        var result = await Mediator.Send(new AssignUserTaskCommand(id, taskId));
         return Ok(result);
     }
 

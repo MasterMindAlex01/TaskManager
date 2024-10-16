@@ -2,10 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Features.Identity.Roles.Commands;
 using TaskManager.Application.Features.Identity.Roles.Queries;
+using TaskManager.Shared.Authorization;
 
 namespace TaskManager.Api.Controllers;
 
-[Authorize(Roles = "Supervisor")]
+[Authorize(Roles = ConstantRoles.Administrator)]
 public class RolesController : BaseApiController
 {
     // GET: api/<Roles>

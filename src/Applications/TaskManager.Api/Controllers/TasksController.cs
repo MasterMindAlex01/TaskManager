@@ -2,10 +2,12 @@
 using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Features.TaskManager.Tasks.Commands;
 using TaskManager.Application.Features.TaskManager.Tasks.Queries;
+using TaskManager.Application.Features.TaskManager.Tasks.Queries.GetAll;
+using TaskManager.Shared.Authorization;
 
 namespace TaskManager.Api.Controllers;
 
-[Authorize]
+[Authorize(Roles = ConstantRoles.Administrator)]
 public class TasksController : BaseApiController
 {
     // GET: api/<TasksController>
@@ -13,6 +15,14 @@ public class TasksController : BaseApiController
     public async Task<ActionResult> GetAll([FromQuery] int pageNumber, int pageSize)
     {
         var result = await Mediator.Send(new GetAllTasksQuery(pageNumber, pageSize));
+        return Ok(result);
+    }
+    
+    [Authorize(Roles = $"{ConstantRoles.Administrator},{ConstantRoles.Supervisor},{ConstantRoles.Employee}")]
+    [HttpGet("GetAllByCurrentUser")]
+    public async Task<ActionResult> GetAllByCurrentUser()
+    {
+        var result = await Mediator.Send(new GetAllTasksByCurrentUserQuery());
         return Ok(result);
     }
 
@@ -47,4 +57,14 @@ public class TasksController : BaseApiController
         var result = await Mediator.Send(new DeleteTaskCommand(id));
         return Ok(result);
     }
+
+    // PUT api/<TasksController>/5
+    [Authorize(Roles = $"{ConstantRoles.Administrator},{ConstantRoles.Supervisor},{ConstantRoles.Employee}")]
+    [HttpPut("UpdateStatus")]
+    public async Task<ActionResult> UpdateStatus([FromBody] UpdateTaskStatusCommand command)
+    {
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
 }

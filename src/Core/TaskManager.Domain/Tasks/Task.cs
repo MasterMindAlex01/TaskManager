@@ -53,6 +53,17 @@ public class Task : BaseEntity, IAggregateRoot
         return new Task(id, title, description, priority, assignedBy, assignedTo, tag);
     }
 
+    public void AssignedToUser(Guid assignedBy, Guid assignedTo)
+    {
+        AssignedBy = assignedBy;
+        AssignedTo = assignedTo;
+    }
+
+    public void UpdateSatatus(int status)
+    {
+        Status = status;
+    }
+
     public void Update(
         string title,
         string description,
