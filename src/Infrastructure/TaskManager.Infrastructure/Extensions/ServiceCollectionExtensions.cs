@@ -1,10 +1,22 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Application.Common.Interfaces;
+using TaskManager.Infrastructure.Auth;
+using WarehouseManager.Infrastructure.Auth;
 
 namespace TaskManager.Infrastructure.Extensions
 {
     public static class ServiceCollectionExtensions
     {
+        public static IApplicationBuilder UseCurrentUser(this IApplicationBuilder app) =>
+            app.UseMiddleware<CurrentUserMiddleware>();
+
+        public static IServiceCollection AddCurrentUser(this IServiceCollection services) =>
+            services
+                .AddScoped<CurrentUserMiddleware>()
+                .AddScoped<ICurrentUser, CurrentUser>()
+                .AddScoped(sp => (ICurrentUserInitializer)sp.GetRequiredService<ICurrentUser>());
+
         public static IServiceCollection AddServices(this IServiceCollection services) =>
          services
             .AddServices(typeof(ITransientService), ServiceLifetime.Transient)

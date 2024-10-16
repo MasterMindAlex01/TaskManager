@@ -1,10 +1,9 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TaskManager.Application.Common.Persistence;
 using TaskManager.Application.Common.Persistence.Roles;
+using TaskManager.Application.Common.Persistence.Tasks;
 using TaskManager.Application.Common.Persistence.Users;
 using TaskManager.Persistence.Repository;
-using TaskManager.Persistence.Repository.Roles;
-using TaskManager.Persistence.Repository.Users;
 
 namespace TaskManager.Persistence.Extensions;
 
@@ -15,6 +14,7 @@ public static class ServiceCollectionExtensions
         services.AddScoped(typeof(IRepositoryAsync<>), typeof(RepositoryAsync<>))
             .AddScoped<IUserRepository, UserRepository>()
             .AddScoped<IRoleRepository, RoleRepository>()
+            .AddScoped<ITaskRepository, TaskRepository>()
             .AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
 
         return services;

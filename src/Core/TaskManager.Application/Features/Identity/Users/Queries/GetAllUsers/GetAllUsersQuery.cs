@@ -1,26 +1,25 @@
 ﻿using MediatR;
-using TaskManager.Application.Common.Persistence;
-using TaskManager.Domain.Identity;
+using TaskManager.Application.Common.Persistence.Users;
 using TaskManager.Shared.Wrapper;
 
 namespace TaskManager.Application.Features.Identity.Users.Queries;
 
-public class GetAllUsersQuery : IRequest<Result<List<User>>>
+public class GetAllUsersQuery : IRequest<Result<List<UserResponse>>>
 {
 }
 
-internal class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<List<User>>>
+internal class GetAllUsersQueryHandler : IRequestHandler<GetAllUsersQuery, Result<List<UserResponse>>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserRepository _userRepository;
 
-    public GetAllUsersQueryHandler(IUnitOfWork unitOfWork)
+    public GetAllUsersQueryHandler(IUserRepository userRepository)
     {
-        _unitOfWork = unitOfWork;
+        _userRepository = userRepository;
     }
 
-    public async Task<Result<List<User>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
+    public async Task<Result<List<UserResponse>>> Handle(GetAllUsersQuery request, CancellationToken cancellationToken)
     {
-        var userList = await _unitOfWork.Repository<User>().GetAllAsync();
-        return await Result<List<User>>.SuccessAsync(userList);
+        var userList = await _userRepository.GetAllUserAsync();
+        return await Result<List<UserResponse>>.SuccessAsync(userList);
     }
 }

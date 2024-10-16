@@ -1,13 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Features.Identity.Roles.Commands;
-using TaskManager.Application.Features.Identity.Roles.Queries.GetAll;
+using TaskManager.Application.Features.Identity.Roles.Queries;
 
 namespace TaskManager.Api.Controllers;
 
+[Authorize(Roles = "Supervisor")]
 public class RolesController : BaseApiController
 {
     // GET: api/<Roles>
-    [HttpGet]
+    [HttpGet("GetAll")]
     public async Task<ActionResult> GetAll()
     {
         var result = await Mediator.Send(new GetAllRolesQuery());
@@ -31,15 +33,19 @@ public class RolesController : BaseApiController
     }
 
     // PUT api/<Roles>/5
-    [HttpPut("{id}")]
-    public void Put(int id, [FromBody] string value)
+    [HttpPut("Update")]
+    public async Task<ActionResult> Update([FromBody] UpdateRoleCommand command)
     {
+        var result = await Mediator.Send(command);
+        return Ok(result);
     }
 
     // DELETE api/<Roles>/5
-    [HttpDelete("{id}")]
-    public void Delete(int id)
+    [HttpDelete("Delete/{id}")]
+    public async Task<ActionResult> Delete(Guid id)
     {
+        var result = await Mediator.Send(new DeleteRoleCommand(id));
+        return Ok(result);
     }
 
 }

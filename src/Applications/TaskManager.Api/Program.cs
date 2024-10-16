@@ -24,6 +24,8 @@ namespace TaskManager.Api
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddJwtAuth(builder.Configuration);
+            builder.Services.AddCurrentUser();
+
 
             var app = builder.Build();
 
@@ -37,6 +39,7 @@ namespace TaskManager.Api
             app.UseHttpsRedirection();
 
             app.UseAuthentication();
+            app.UseCurrentUser();
             app.UseAuthorization();
 
             app.MapControllers();

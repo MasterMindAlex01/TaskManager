@@ -4,7 +4,7 @@ using TaskManager.Application.Common.Persistence.Roles;
 using TaskManager.Application.Features.Identity.Roles.Queries;
 using TaskManager.Domain.Identity;
 
-namespace TaskManager.Persistence.Repository.Roles;
+namespace TaskManager.Persistence.Repository;
 
 public class RoleRepository : IRoleRepository
 {

@@ -52,4 +52,25 @@ public class Task : BaseEntity, IAggregateRoot
     {
         return new Task(id, title, description, priority, assignedBy, assignedTo, tag);
     }
+
+    public void Update(
+        string title,
+        string description,
+        string priority,
+        int status,
+        DateTime creationDate,
+        Guid assignedBy,
+        Guid assignedTo,
+        string tag)
+    {
+        Title = title;
+        Description = description;
+        Priority = priority;
+        Status = status;
+        CreationDate = creationDate;
+        DueDate = creationDate.AddMonths(1);
+        AssignedBy = assignedBy;
+        AssignedTo = assignedTo;
+        Tag = tag;
+    }
 }

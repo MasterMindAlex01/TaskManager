@@ -5,11 +5,12 @@ using TaskManager.Application.Features.Identity.Users.Queries;
 
 namespace TaskManager.Api.Controllers;
 
+[Authorize(Roles = "Supervisor")]
 public class UsersController : BaseApiController
 {
     // GET: api/<Users>
-    [Authorize(Roles = "Super,Admin,Basic")]
-    [HttpGet("GetAllUser")]
+
+    [HttpGet("GetAll")]
     public async Task<ActionResult> Get()
     {
         var result = await Mediator.Send(new GetAllUsersQuery());
@@ -17,7 +18,6 @@ public class UsersController : BaseApiController
     }
 
     // GET api/<Users>/5
-    [Authorize(Roles = "Super,Admin,Basic")]
     [HttpGet("GetUser/{id}")]
     public async Task<ActionResult> Get(Guid id)
     {
@@ -26,7 +26,6 @@ public class UsersController : BaseApiController
     }
 
     // POST api/<Users>
-    [Authorize(Roles = "Super")]
     [HttpPost("Create")]
     public async Task<ActionResult> Create([FromBody] CreateUserCommand command)
     {
@@ -44,7 +43,6 @@ public class UsersController : BaseApiController
     }
 
     // PUT api/<Users>/5
-    [Authorize(Roles = "Super")]
     [HttpPut("Update")]
     public async Task<ActionResult> Update([FromBody] UpdateUserCommand command)
     {
@@ -53,11 +51,20 @@ public class UsersController : BaseApiController
     }
 
     // DELETE api/<Users>/5
-    [Authorize(Roles = "Super")]
     [HttpDelete("Delete/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {
         var result = await Mediator.Send(new DeleteUserCommand(id));
         return Ok(result);
     }
+
+    // POST api/<Users>/1/roles
+    [HttpPost("{id}/roles")]
+    public async Task<ActionResult> AssignRolesAsync(Guid id, [FromBody] AssignUserRolesCommand command)
+    {
+        command.UserId = id;
+        var result = await Mediator.Send(command);
+        return Ok(result);
+    }
+
 }

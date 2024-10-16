@@ -1,11 +1,10 @@
 ﻿using MediatR;
-using TaskManager.Application.Common.Persistence;
-using TaskManager.Domain.Identity;
+using TaskManager.Application.Common.Persistence.Users;
 using TaskManager.Shared.Wrapper;
 
 namespace TaskManager.Application.Features.Identity.Users.Queries;
 
-public class GetUserByIdQuery : IRequest<Result<User?>>
+public class GetUserByIdQuery : IRequest<Result<UserResponse?>>
 {
     public GetUserByIdQuery(Guid id) => Id = id;
 
@@ -13,18 +12,18 @@ public class GetUserByIdQuery : IRequest<Result<User?>>
 
 }
 
-internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<User?>>
+internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<UserResponse?>>
 {
-    private readonly IUnitOfWork _unitOfWork;
+    private readonly IUserRepository _userRepository;
 
-    public GetUserByIdQueryHandler(IUnitOfWork unitOfWork)
+    public GetUserByIdQueryHandler(IUserRepository userRepository)
     {
-        _unitOfWork = unitOfWork;
+        _userRepository = userRepository;
     }
 
-    public async Task<Result<User?>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<UserResponse?>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
     {
-        var user =  await _unitOfWork.Repository<User>().GetByIdAsync(query.Id);
-        return await Result<User?>.SuccessAsync(user);
+        var user =  await _userRepository.GetUserByIdAsync(query.Id);
+        return await Result<UserResponse?>.SuccessAsync(user);
     }
 }
