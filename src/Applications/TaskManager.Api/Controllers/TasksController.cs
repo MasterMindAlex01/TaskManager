@@ -7,17 +7,17 @@ using TaskManager.Shared.Authorization;
 
 namespace TaskManager.Api.Controllers;
 
-[Authorize(Roles = ConstantRoles.Administrator)]
 public class TasksController : BaseApiController
 {
     // GET: api/<TasksController>
+    [Authorize(Roles = ConstantRoles.Administrator)]
     [HttpGet("GetAll")]
     public async Task<ActionResult> GetAll([FromQuery] int pageNumber, int pageSize)
     {
         var result = await Mediator.Send(new GetAllTasksQuery(pageNumber, pageSize));
         return Ok(result);
     }
-    
+
     [Authorize(Roles = $"{ConstantRoles.Administrator},{ConstantRoles.Supervisor},{ConstantRoles.Employee}")]
     [HttpGet("GetAllByCurrentUser")]
     public async Task<ActionResult> GetAllByCurrentUser()
@@ -27,6 +27,7 @@ public class TasksController : BaseApiController
     }
 
     // GET api/<TasksController>/5
+    [Authorize(Roles = ConstantRoles.Administrator)]
     [HttpGet("GetTask/{id}")]
     public async Task<ActionResult> GetTask(Guid id)
     {
@@ -35,6 +36,7 @@ public class TasksController : BaseApiController
     }
 
     // POST api/<TasksController>
+    [Authorize(Roles = ConstantRoles.Administrator)]
     [HttpPost("Create")]
     public async Task<ActionResult> Create([FromBody] CreateTaskCommand command)
     {
@@ -43,6 +45,7 @@ public class TasksController : BaseApiController
     }
 
     // PUT api/<TasksController>/5
+    [Authorize(Roles = ConstantRoles.Administrator)]
     [HttpPut("Update")]
     public async Task<ActionResult> Update([FromBody] UpdateTaskCommand command)
     {
@@ -51,6 +54,7 @@ public class TasksController : BaseApiController
     }
 
     // DELETE api/<TasksController>/5
+    [Authorize(Roles = ConstantRoles.Administrator)]
     [HttpDelete("Delete/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

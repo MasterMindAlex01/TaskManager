@@ -60,4 +60,13 @@ public class RoleRepository : IRoleRepository
             .AsNoTracking()
             .ToListAsync();
     }
+
+    public async Task<Role?> GetRoleByNameAsync(string rolename)
+    {
+        return await _repository.Entities
+            .Include(x => x.Users)
+            .Where(x => x.Name == rolename)
+            .AsNoTracking()
+            .FirstOrDefaultAsync();
+    }
 }
