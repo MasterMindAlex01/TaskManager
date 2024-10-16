@@ -1,10 +1,11 @@
 ﻿using MediatR;
 using TaskManager.Application.Common.Persistence;
+using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
 
-namespace TaskManager.Application.Features.Identity.Users.Queries.GetUserById;
+namespace TaskManager.Application.Features.Identity.Users.Queries;
 
-public class GetUserByIdQuery : IRequest<Result>
+public class GetUserByIdQuery : IRequest<Result<User?>>
 {
     public GetUserByIdQuery(Guid id) => Id = id;
 
@@ -12,7 +13,7 @@ public class GetUserByIdQuery : IRequest<Result>
 
 }
 
-internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result>
+internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Result<User?>>
 {
     private readonly IUnitOfWork _unitOfWork;
 
@@ -21,8 +22,9 @@ internal class GetUserByIdQueryHandler : IRequestHandler<GetUserByIdQuery, Resul
         _unitOfWork = unitOfWork;
     }
 
-    public async Task<Result> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
+    public async Task<Result<User?>> Handle(GetUserByIdQuery query, CancellationToken cancellationToken)
     {
-        return await _userReadService.GetUserByIdAsync(query.Id);
+        var user =  await _unitOfWork.Repository<User>().GetByIdAsync(query.Id);
+        return await Result<User?>.SuccessAsync(user);
     }
 }

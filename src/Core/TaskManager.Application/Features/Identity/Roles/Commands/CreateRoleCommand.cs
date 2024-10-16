@@ -1,28 +1,39 @@
 ﻿using MediatR;
+using TaskManager.Application.Common.Persistence;
+using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
 
-namespace Application.Features.UserAdmon.Roles.Commands
-{
-    public class CreateRoleCommand : IRequest<Result>
-    {
-        public required string Name { get; set; }
-        public required string Description { get; set; }
+namespace TaskManager.Application.Features.Identity.Roles.Commands;
 
+public class CreateRoleCommand : IRequest<Result>
+{
+    public string Name { get; set; } = null!;
+    public string Description { get; set; } = null!;
+
+}
+
+internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Result>
+{
+    private readonly IUnitOfWork _unitOfWork;
+
+    public CreateRoleCommandHandler(IUnitOfWork unitOfWork)
+    {
+        _unitOfWork = unitOfWork;
     }
 
-    internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, IResult>
+    public async Task<Result> Handle(CreateRoleCommand command, CancellationToken cancellationToken)
     {
-        private readonly IRoleWriteService _roleWriteService;
-
-        public CreateRoleCommandHandler(
-            IRoleWriteService roleWriteService)
+        try
         {
-            _roleWriteService = roleWriteService;
+            var role = Role.Create(Guid.NewGuid(), command.Name, command.Description);
+
+            await _unitOfWork.Repository<Role>().AddAsync(role);
+            await _unitOfWork.SaveChangesAsync(cancellationToken);
+            return await Result<Guid>.SuccessAsync(role.Id, "Role Created");
         }
-
-        public async Task<IResult> Handle(CreateRoleCommand command, CancellationToken cancellationToken)
+        catch (Exception)
         {
-            return await _roleWriteService.CreateRole(command, cancellationToken);
+            return await Result<Guid>.FailAsync("Role creation failed");
         }
     }
 }

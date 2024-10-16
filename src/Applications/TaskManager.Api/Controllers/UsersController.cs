@@ -1,28 +1,32 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using TaskManager.Application.Features.Identity.Users.Commands;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
+using TaskManager.Application.Features.Identity.Users.Queries;
 
 namespace TaskManager.Api.Controllers;
 
 public class UsersController : BaseApiController
 {
     // GET: api/<Users>
-    [HttpGet]
+    [Authorize(Roles = "Super,Admin,Basic")]
+    [HttpGet("GetAllUser")]
     public async Task<ActionResult> Get()
     {
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new GetAllUsersQuery());
         return Ok(result);
     }
 
     // GET api/<Users>/5
-    [HttpGet("{id}")]
-    public async Task<ActionResult> Get(int id)
+    [Authorize(Roles = "Super,Admin,Basic")]
+    [HttpGet("GetUser/{id}")]
+    public async Task<ActionResult> Get(Guid id)
     {
-        var result = await Mediator.Send(command);
+        var result = await Mediator.Send(new GetUserByIdQuery(id));
         return Ok(result);
     }
 
     // POST api/<Users>
+    [Authorize(Roles = "Super")]
     [HttpPost("Create")]
     public async Task<ActionResult> Create([FromBody] CreateUserCommand command)
     {
@@ -31,6 +35,7 @@ public class UsersController : BaseApiController
     }
 
     // POST api/<Users>
+    [AllowAnonymous]
     [HttpPost("Register")]
     public async Task<ActionResult> Register([FromBody] CreateUserCommand command)
     {
@@ -39,6 +44,7 @@ public class UsersController : BaseApiController
     }
 
     // PUT api/<Users>/5
+    [Authorize(Roles = "Super")]
     [HttpPut("Update")]
     public async Task<ActionResult> Update([FromBody] UpdateUserCommand command)
     {
@@ -47,6 +53,7 @@ public class UsersController : BaseApiController
     }
 
     // DELETE api/<Users>/5
+    [Authorize(Roles = "Super")]
     [HttpDelete("Delete/{id}")]
     public async Task<ActionResult> Delete(Guid id)
     {

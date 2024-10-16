@@ -32,7 +32,7 @@ internal class DeleteUserCommandHandler : IRequestHandler<DeleteUserCommand, Res
     {
         try
         {
-            User? currentUser = await _userRepository.GetByIdWithRolesAsync(command.Id);
+            User? currentUser = await _userRepository.GetUserByIdWithRolesAsync(command.Id);
             if (currentUser == null || currentUser.IsDeleted)
             {
                 return await Result<Guid>.FailAsync($"User with ID {command.Id} does not exist");

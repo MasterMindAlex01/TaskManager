@@ -36,7 +36,7 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Res
     {
         try
         {
-            User? currentAppuser = await _userRepository.GetByIdWithRolesAsync(command.Id);
+            User? currentAppuser = await _userRepository.GetUserByIdWithRolesAsync(command.Id);
             if (currentAppuser == null || currentAppuser.IsDeleted)
             {
                 return await Result<Guid>.FailAsync($"User with ID {command.Id} does not exist");

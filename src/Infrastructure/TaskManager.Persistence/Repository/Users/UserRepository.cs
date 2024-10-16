@@ -14,9 +14,18 @@ public class UserRepository : IUserRepository
         _repository = repository;
     }
 
-    public async Task<User?> GetByIdWithRolesAsync(Guid id)
+    public async Task<User?> GetUserByIdWithRolesAsync(Guid id)
     {
         return await _repository.Entities.Include(x => x.Roles)
-            .Where(x => x.Id == id).FirstOrDefaultAsync();
+            .Where(x => x.Id == id).AsNoTracking().FirstOrDefaultAsync();
+    }
+
+    public async Task<User?> GetUserByUsernameWithRolesAsync(string username)
+    {
+        return await _repository.Entities
+            .Include(x => x.Roles)
+                .ThenInclude(x => x.Role)
+            .Where(x => x.Username == username)
+            .AsNoTracking().FirstOrDefaultAsync();
     }
 }

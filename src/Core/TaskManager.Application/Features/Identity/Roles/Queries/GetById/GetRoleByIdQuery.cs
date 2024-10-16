@@ -1,11 +1,10 @@
-﻿using Application.Interfaces.Services.UserAdmon;
-using Application.Models.Responses;
-using MediatR;
-using Shared.Wrapper;
+﻿using MediatR;
+using TaskManager.Application.Common.Persistence.Roles;
+using TaskManager.Shared.Wrapper;
 
-namespace Application.Features.UserAdmon.Roles.Queries
+namespace TaskManager.Application.Features.Identity.Roles.Queries
 {
-    public class GetRoleByIdQuery : IRequest<Result<RoleResponse>>
+    public class GetRoleByIdQuery : IRequest<Result<RoleResponse?>>
     {
         public GetRoleByIdQuery(Guid id)
         {
@@ -16,18 +15,19 @@ namespace Application.Features.UserAdmon.Roles.Queries
 
     }
 
-    internal class GetRoleByIdQueryQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<RoleResponse>>
+    internal class GetRoleByIdQueryQueryHandler : IRequestHandler<GetRoleByIdQuery, Result<RoleResponse?>>
     {
-        private readonly IRoleReadService _roleReadService;
+        private readonly IRoleRepository _roleRepository;
 
-        public GetRoleByIdQueryQueryHandler(IRoleReadService roleReadService)
+        public GetRoleByIdQueryQueryHandler(IRoleRepository roleRepository)
         {
-            _roleReadService = roleReadService;
+            _roleRepository = roleRepository;
         }
 
-        public async Task<Result<RoleResponse>> Handle(GetRoleByIdQuery query, CancellationToken cancellationToken)
+        public async Task<Result<RoleResponse?>> Handle(GetRoleByIdQuery query, CancellationToken cancellationToken)
         {
-            return await _roleReadService.RetrieveOne(query.Id);
+            var role = await _roleRepository.GetRoleByIdAsync(query.Id);
+            return await Result<RoleResponse?>.SuccessAsync(role);
         }
     }
 }

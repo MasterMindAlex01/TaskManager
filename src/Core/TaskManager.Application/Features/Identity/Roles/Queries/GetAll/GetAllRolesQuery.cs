@@ -1,26 +1,25 @@
-﻿using Application.Interfaces.Services.UserAdmon;
-using Application.Models.Responses;
-using MediatR;
-using Shared.Wrapper;
+﻿using MediatR;
+using TaskManager.Application.Common.Persistence.Roles;
+using TaskManager.Shared.Wrapper;
 
-namespace Application.Features.UserAdmon.Roles.Queries
+namespace TaskManager.Application.Features.Identity.Roles.Queries;
+
+public class GetAllRolesQuery : IRequest<Result<List<RoleResponse>>>
 {
-    public class GetAllRolesQuery : IRequest<Result<List<RoleResponse>>>
+}
+
+internal class GetAllRolesQueryHandler : IRequestHandler<GetAllRolesQuery, Result<List<RoleResponse>>>
+{
+    private readonly IRoleRepository _roleRepository;
+
+    public GetAllRolesQueryHandler(IRoleRepository roleRepository)
     {
+        _roleRepository = roleRepository;
     }
 
-    internal class GetAllRolesQueryHandler : IRequestHandler<GetAllRolesQuery, Result<List<RoleResponse>>>
+    public async Task<Result<List<RoleResponse>>> Handle(GetAllRolesQuery request, CancellationToken cancellationToken)
     {
-        private readonly IRoleReadService _roleReadPlatformService;
-
-        public GetAllRolesQueryHandler(IRoleReadService roleReadPlatformService)
-        {
-            _roleReadPlatformService = roleReadPlatformService;
-        }
-
-        public async Task<Result<List<RoleResponse>>> Handle(GetAllRolesQuery request, CancellationToken cancellationToken)
-        {
-            return await _roleReadPlatformService.RetrieveAll();
-        }
+        var roles = await _roleRepository.GetAllAsync();
+        return await Result<List<RoleResponse>>.SuccessAsync(roles);
     }
 }
