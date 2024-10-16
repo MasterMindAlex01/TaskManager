@@ -7,7 +7,7 @@ namespace TaskManager.Application.Features.TaskManager.Tasks.Commands;
 public class UpdateTaskStatusCommand : IRequest<Result>
 {
     public Guid Id { get; set; }
-    public int Status { get; set; }
+    public string Status { get; set; } = null!;
 }
 
 internal class UpdateTaskStatusCommandHandler : IRequestHandler<UpdateTaskStatusCommand, Result>
@@ -30,7 +30,8 @@ internal class UpdateTaskStatusCommandHandler : IRequestHandler<UpdateTaskStatus
                 return await Result<Guid>.FailAsync("Task no found");
             }
             task.UpdateSatatus(command.Status);
-
+            
+            await _unitOfWork.Repository<Domain.Tasks.Task>().UpdateAsync(task);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return await Result<Guid>.SuccessAsync("Task update");

@@ -18,5 +18,7 @@ public class TaskConfig : IEntityTypeConfiguration<Domain.Tasks.Task>
         builder.Property(e => e.Priority).HasMaxLength(100);
 
         builder.Property(e => e.Priority).HasMaxLength(250);
+        
+        builder.Property(e => e.Status).HasMaxLength(250);
     }
 }

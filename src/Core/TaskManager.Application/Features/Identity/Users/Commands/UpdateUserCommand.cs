@@ -49,6 +49,7 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Res
                 command.Email,
                 command.Enabled);
 
+            await _unitOfWork.Repository<User>().UpdateAsync(currentAppuser);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return await Result<Guid>.SuccessAsync(currentAppuser.Id, "User deleted");

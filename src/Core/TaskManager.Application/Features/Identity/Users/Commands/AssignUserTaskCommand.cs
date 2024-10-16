@@ -51,8 +51,9 @@ internal class AssignUserTaskCommandHandler : IRequestHandler<AssignUserTaskComm
                 return await Result<Guid>.FailAsync("Task not found");
             }
 
-            task.AssignedToUser(_currentUser.GetUserId(), user.Id);
+            task.UpdateAssignedUser(_currentUser.GetUserId(), user.Id);
 
+            await _unitOfWork.Repository<Domain.Tasks.Task>().UpdateAsync(task);
             await _unitOfWork.SaveChangesAsync(cancellationToken);
 
             return await Result<Guid>.SuccessAsync("Task assigned");

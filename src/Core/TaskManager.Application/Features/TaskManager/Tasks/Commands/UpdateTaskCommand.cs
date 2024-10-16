@@ -11,7 +11,7 @@ public class UpdateTaskCommand : IRequest<Result>
     public string Title { get; set; } = null!;
     public string Description { get; set; } = null!;
     public string Priority { get; set; } = null!;
-    public int Status { get; set; }
+    public string Status { get; set; } = null!;
     public DateTime CreationDate { get; set; }
     public Guid AssignedTo { get; set; }
     public string? Tag { get; set; }

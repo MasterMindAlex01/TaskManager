@@ -33,7 +33,7 @@ namespace TaskManager.Persistence.Migrations
                     Title = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Description = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
                     Priority = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     DueDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AssignedBy = table.Column<Guid>(type: "uniqueidentifier", nullable: false),

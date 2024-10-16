@@ -20,7 +20,7 @@ public class Task : BaseEntity, IAggregateRoot
         Title = title;
         Description = description;
         Priority = priority;
-        Status = (int)ETaskStatus.Pending;
+        Status = ETaskStatus.Pending.ToString();
         CreationDate = DateTime.UtcNow;
         DueDate = DateTime.UtcNow.AddMonths(1);
         AssignedBy = assignedBy;
@@ -31,7 +31,7 @@ public class Task : BaseEntity, IAggregateRoot
     public string Title { get; private set; } = null!;
     public string Description { get; private set; } = null!;
     public string Priority { get; private set; } = null!;
-    public int Status { get; private set; }
+    public string Status { get; private set; }
     public DateTime CreationDate { get; private set; }
     public DateTime DueDate { get; private set; }
     public Guid AssignedBy { get; private set; }
@@ -53,13 +53,13 @@ public class Task : BaseEntity, IAggregateRoot
         return new Task(id, title, description, priority, assignedBy, assignedTo, tag);
     }
 
-    public void AssignedToUser(Guid assignedBy, Guid assignedTo)
+    public void UpdateAssignedUser(Guid assignedBy, Guid assignedTo)
     {
         AssignedBy = assignedBy;
         AssignedTo = assignedTo;
     }
 
-    public void UpdateSatatus(int status)
+    public void UpdateSatatus(string status)
     {
         Status = status;
     }
@@ -68,7 +68,7 @@ public class Task : BaseEntity, IAggregateRoot
         string title,
         string description,
         string priority,
-        int status,
+        string status,
         DateTime creationDate,
         Guid assignedBy,
         Guid assignedTo,
