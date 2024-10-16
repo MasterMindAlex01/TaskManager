@@ -1,5 +1,7 @@
-
 using TaskManager.Api.Extensions;
+using TaskManager.Application.Extensions;
+using TaskManager.Infrastructure.Extensions;
+using TaskManager.Persistence.Extensions;
 
 namespace TaskManager.Api
 {
@@ -10,9 +12,15 @@ namespace TaskManager.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+
             builder.Services.AddDatabase(builder.Configuration);
 
+            builder.Services.AddApplicationLayer();
+            builder.Services.AddRepositories();
+            builder.Services.AddServices();
+
             builder.Services.AddControllers();
+            
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();

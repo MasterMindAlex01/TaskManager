@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TaskManager.Application.Common.Interfaces;
 using TaskManager.Persistence.Context;
 
 namespace TaskManager.Api.Extensions;

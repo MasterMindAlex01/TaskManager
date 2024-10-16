@@ -17,9 +17,7 @@ public class User : BaseEntity, IAggregateRoot
         string lastname,
         string password,
         string passwordSalt,
-        string email,
-        bool enabled,
-        bool isDeleted) : base(id)
+        string email) : base(id)
     {
         Username = username;
         Firstname = firstname;
@@ -27,8 +25,8 @@ public class User : BaseEntity, IAggregateRoot
         Password = password;
         PasswordSalt = passwordSalt;
         Email = email;
-        Enabled = enabled;
-        IsDeleted = isDeleted;
+        Enabled = true;
+        IsDeleted = false;
     }
 
     public string Username { get; private set; } = null!;
@@ -51,8 +49,6 @@ public class User : BaseEntity, IAggregateRoot
         string lastname,
         string email,
         string password,
-        bool enabled,
-        bool isDeleted,
         string pepper,
         int iteration)
     {
@@ -68,9 +64,7 @@ public class User : BaseEntity, IAggregateRoot
             lastname.Trim(),
             password,
             passwordSalt,
-            email,
-            enabled,
-            isDeleted);
+            email);
     }
 
     public void Update(
@@ -78,42 +72,39 @@ public class User : BaseEntity, IAggregateRoot
         string firstname,
         string lastname,
         string email,
-        bool enabled,
-        bool isDeleted)
+        bool enabled)
     {
         Username = username;
         Firstname = firstname;
         Lastname = lastname;
         Email = email;
         Enabled = enabled;
-        IsDeleted = isDeleted;
     }
 
-    public void AddRole(Guid roleId)
+    public void AddRole(Role role)
     {
-        _roles.Add(new UserRole(Id, roleId));
+        _roles.Add(new UserRole(Id, role.Id));
     }
 
-    public void AddRoleRange(IEnumerable<Guid> roleIdList)
+    public void AddRoleRange(List<Role> roleList)
     {
-        foreach (var roleId in roleIdList)
+        foreach (var role in roleList)
         {
-            _roles.Add(new UserRole(Id, roleId));
+            _roles.Add(new UserRole(Id, role.Id));
         }
     }
 
-    public void RemoveRole(Guid roleId)
+    public void RemoveRole(Role role)
     {
-        var role = Roles.FirstOrDefault(x => x.RoleId == roleId);
-        if (role != null) { _roles.Remove(role); }
+        var currentRole = Roles.FirstOrDefault(x => x.RoleId == role.Id);
+        if (currentRole != null) { _roles.Remove(currentRole); }
     }
 
-    public void RemoveRoleRange(IEnumerable<Guid> roleIdList)
+    public void RemoveRoleRange(List<Role> roleList)
     {
-
-        foreach (var role in roleIdList)
+        foreach (var role in roleList)
         {
-            var currentRole = Roles.FirstOrDefault(x => x.RoleId == role);
+            var currentRole = Roles.FirstOrDefault(x => x.RoleId == role.Id);
             if (currentRole != null)
             {
                 _roles.Remove(currentRole);
