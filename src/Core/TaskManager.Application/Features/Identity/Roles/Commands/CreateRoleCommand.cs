@@ -2,7 +2,6 @@
 using MediatR;
 using TaskManager.Application.Common.Persistence;
 using TaskManager.Application.Common.Validation;
-using TaskManager.Application.Features.Identity.Users.Commands;
 using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
 

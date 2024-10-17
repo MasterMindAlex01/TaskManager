@@ -65,6 +65,7 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Res
         }
     }
 }
+
 public class UpdateTaskCommandValidator : CustomValidator<UpdateTaskCommand>
 {
     public UpdateTaskCommandValidator()
