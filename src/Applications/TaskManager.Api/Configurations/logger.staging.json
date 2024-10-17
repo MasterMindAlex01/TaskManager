@@ -1,0 +1,7 @@
+{
+  "LoggerSettings": {
+    "AppName": "TaskManager",
+    "WriteToFile": false,
+    "StructuredConsoleLogging": true
+  }
+}

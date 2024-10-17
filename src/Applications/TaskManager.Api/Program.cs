@@ -1,7 +1,8 @@
 using TaskManager.Api.Extensions;
 using TaskManager.Application.Extensions;
+using TaskManager.Infrastructure;
 using TaskManager.Infrastructure.Extensions;
-using TaskManager.Persistence.Extensions;
+using TaskManager.Infrastructure.Logging.Serilog;
 
 namespace TaskManager.Api
 {
@@ -12,20 +13,19 @@ namespace TaskManager.Api
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            builder.AddConfigurations();
-
-            builder.Services.AddDatabase(builder.Configuration);
-
-            builder.Services.AddApplicationLayer();
-            builder.Services.AddRepositories();
-            builder.Services.AddServices();
-
+            builder.AddConfigurations().RegisterSerilog();
+            
             builder.Services.AddControllers();
+
+            builder.Services.AddInfrastructure(builder.Configuration);
+            builder.Services.AddApplicationLayer();
+
 
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddJwtAuth(builder.Configuration);
             builder.Services.AddCurrentUser();
+
 
             var app = builder.Build();
 
@@ -37,9 +37,11 @@ namespace TaskManager.Api
 
             app.UseHttpsRedirection();
 
-            app.UseAuthentication();
-            app.UseCurrentUser();
-            app.UseAuthorization();
+            app.UseInfrastructure(builder.Configuration);
+
+            //app.UseAuthentication();
+            //app.UseCurrentUser();
+            //app.UseAuthorization();
 
             app.MapControllers();
 

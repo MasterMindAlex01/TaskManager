@@ -7,6 +7,8 @@ using TaskManager.Domain.Tools;
 using TaskManager.Shared.Wrapper;
 using Microsoft.Extensions.Configuration;
 using TaskManager.Shared.Authorization;
+using FluentValidation;
+using TaskManager.Application.Common.Validation;
 
 namespace TaskManager.Application.Features.Identity.Users.Commands;
 
@@ -82,6 +84,35 @@ internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand,
         catch (Exception ex)
         {
             return await Result<Guid>.FailAsync(ex.Message);
+        }
+    }
+
+    public class RegisterUserCommandValidator : CustomValidator<RegisterUserCommand>
+    {
+        public RegisterUserCommandValidator()
+        {
+            RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .EmailAddress()
+            .WithMessage("Invalid Email Address.");
+
+            RuleFor(u => u.Username).Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .MinimumLength(6);
+
+            RuleFor(p => p.Firstname).Cascade(CascadeMode.Stop)
+                .NotEmpty();
+
+            RuleFor(p => p.Lastname).Cascade(CascadeMode.Stop)
+                .NotEmpty();
+
+            RuleFor(p => p.Password).Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .MinimumLength(6);
+
+            RuleFor(p => p.RepeatPassword).Cascade(CascadeMode.Stop)
+                .NotEmpty()
+                .Equal(p => p.Password);
         }
     }
 }

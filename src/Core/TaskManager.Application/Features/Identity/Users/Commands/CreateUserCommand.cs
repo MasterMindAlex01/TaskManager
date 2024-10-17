@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using TaskManager.Application.Common.Persistence;
 using TaskManager.Application.Common.Persistence.Roles;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Domain.Common.Events;
 using TaskManager.Domain.Identity;
 using TaskManager.Domain.Tools;
@@ -91,5 +93,33 @@ internal class CreateUserCommandHandler : IRequestHandler<CreateUserCommand, Res
         {
             return await Result<Guid>.FailAsync(ex.Message);
         }
+    }
+}
+
+public class CreateUserCommandValidator : CustomValidator<CreateUserCommand>
+{
+    public CreateUserCommandValidator()
+    {
+        RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .EmailAddress()
+        .WithMessage("Invalid Email Address.");
+
+        RuleFor(u => u.Username).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
+
+        RuleFor(p => p.Firstname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Lastname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Password).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
+
+        RuleFor(p => p.Roles).Cascade(CascadeMode.Stop)
+            .NotEmpty();
     }
 }

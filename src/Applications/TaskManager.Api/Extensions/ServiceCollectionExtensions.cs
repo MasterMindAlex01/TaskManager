@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
-using TaskManager.Application.Common.Interfaces;
-using TaskManager.Persistence.Context;
 
 namespace TaskManager.Api.Extensions;
 
@@ -12,21 +9,16 @@ public static class ServiceCollectionExtensions
 {
     internal static WebApplicationBuilder AddConfigurations(this WebApplicationBuilder builder)
     {
+        const string configurationsDirectory = "Configurations";
         var env = builder.Environment;
         builder.Configuration.AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
-                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true);
+                .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/logger.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/logger.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/middleware.json", optional: false, reloadOnChange: true)
+                .AddJsonFile($"{configurationsDirectory}/middleware.{env.EnvironmentName}.json", optional: true, reloadOnChange: true)
+                .AddEnvironmentVariables();
         return builder;
-    }
-
-    internal static IServiceCollection AddDatabase(
-    this IServiceCollection services,
-    IConfiguration configuration)
-    {
-        return services
-                    .AddDbContext<ApplicationDbContext>(options => options
-                        .UseSqlServer(configuration.GetConnectionString("DefaultConnection"),
-                        o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery))
-                    );
     }
 
     internal static IServiceCollection AddJwtAuth(

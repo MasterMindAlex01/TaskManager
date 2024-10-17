@@ -3,6 +3,8 @@ using TaskManager.Application.Common.Persistence.Users;
 using TaskManager.Application.Common.Persistence;
 using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
+using FluentValidation;
+using TaskManager.Application.Common.Validation;
 
 namespace TaskManager.Application.Features.Identity.Users.Commands;
 
@@ -60,5 +62,29 @@ internal class UpdateUserCommandHandler : IRequestHandler<UpdateUserCommand, Res
             return await Result<Guid>.FailAsync("error");
         }
 
+    }
+}
+
+public class UpdateUserCommandValidator : CustomValidator<UpdateUserCommand>
+{
+    public UpdateUserCommandValidator()
+    {
+        RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .EmailAddress()
+        .WithMessage("Invalid Email Address.");
+
+        RuleFor(u => u.Username).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
+
+        RuleFor(p => p.Firstname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Lastname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Roles).Cascade(CascadeMode.Stop)
+            .NotEmpty();
     }
 }
