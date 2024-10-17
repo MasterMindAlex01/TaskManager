@@ -29,15 +29,18 @@ Paso para correr los proyectos:
 
   2) Al ejecutarlo "https://localhost:7003/swagger/index.html" puede navegarr a la url anterior y ejecutar los endpoint en swagger o despues postman.
   3) Para realizar uso del servicio se recomienda que se logue con el usuario "alex1234" password "123456" desde 'https://localhost:7003/v1/Token/login'
-     post del api rest para obtener token de autenticacion JWT (Json Web Token)
+     post del api rest para obtener token de autenticacion JWT (Json Web Token) usuario administrador para poder realizar las demas acciones del servicio
 
 
 # Docker:
-   Para ejecutar la aplicacion desde docker usar el comando docker-compose up -d esto inicia un grupo de contenedores con una imagen del proyecto y obtener imagen de mongo conectado a la app
+   Para ejecutar la aplicacion desde docker usar el comando docker-compose up -d esta conectado a la base de datos desplegada en azure sql
 
        docker-compose up -d
 
    para cerrar la instancia usar el commando:
 
        docker-compose down
-   
+# Produccion
+Se realizó un despliegue de una base de datos Azure SQL y de Api Rest en Azure App Services desde dockerHub con la imagen "https://hub.docker.com/r/alexdrdeveloper01/taskmanagerapi"
+que esta disponible con datos y en la nube desde la direccion "https://taskmanagertest-hecccrdrb9ekaadu.canadacentral-01.azurewebsites.net/swagger/index.html"
+Recuerde loguear con con el usuario "alex1234" password "123456" desde 'https://localhost:7003/v1/Token/login' y obtener el token para interactuar con la api
