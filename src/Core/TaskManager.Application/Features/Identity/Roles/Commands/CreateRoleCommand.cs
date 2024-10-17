@@ -1,5 +1,8 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using TaskManager.Application.Common.Persistence;
+using TaskManager.Application.Common.Validation;
+using TaskManager.Application.Features.Identity.Users.Commands;
 using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
 
@@ -37,3 +40,18 @@ internal class CreateRoleCommandHandler : IRequestHandler<CreateRoleCommand, Res
         }
     }
 }
+
+public class CreateRoleCommandValidator : CustomValidator<CreateRoleCommand>
+{
+    public CreateRoleCommandValidator()
+    {
+
+        RuleFor(u => u.Name).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(2);
+
+        RuleFor(p => p.Description).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+    }
+}
+

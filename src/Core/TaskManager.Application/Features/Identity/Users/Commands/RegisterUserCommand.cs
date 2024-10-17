@@ -66,7 +66,7 @@ internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand,
             _iteration);
 
             var role = await _roleRepository.GetRoleByNameAsync(ConstantRoles.Employee);
-            if (role == null) 
+            if (role == null)
             {
                 return await Result<Guid>.FailAsync("Error to create user");
             }
@@ -87,32 +87,33 @@ internal class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand,
         }
     }
 
-    public class RegisterUserCommandValidator : CustomValidator<RegisterUserCommand>
+}
+
+public class RegisterUserCommandValidator : CustomValidator<RegisterUserCommand>
+{
+    public RegisterUserCommandValidator()
     {
-        public RegisterUserCommandValidator()
-        {
-            RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .EmailAddress()
-            .WithMessage("Invalid Email Address.");
+        RuleFor(u => u.Email).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .EmailAddress()
+        .WithMessage("Invalid Email Address.");
 
-            RuleFor(u => u.Username).Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .MinimumLength(6);
+        RuleFor(u => u.Username).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
 
-            RuleFor(p => p.Firstname).Cascade(CascadeMode.Stop)
-                .NotEmpty();
+        RuleFor(p => p.Firstname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
 
-            RuleFor(p => p.Lastname).Cascade(CascadeMode.Stop)
-                .NotEmpty();
+        RuleFor(p => p.Lastname).Cascade(CascadeMode.Stop)
+            .NotEmpty();
 
-            RuleFor(p => p.Password).Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .MinimumLength(6);
+        RuleFor(p => p.Password).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
 
-            RuleFor(p => p.RepeatPassword).Cascade(CascadeMode.Stop)
-                .NotEmpty()
-                .Equal(p => p.Password);
-        }
+        RuleFor(p => p.RepeatPassword).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .Equal(p => p.Password);
     }
 }

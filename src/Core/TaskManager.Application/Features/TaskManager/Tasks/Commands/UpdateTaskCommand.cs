@@ -1,6 +1,8 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Common.Persistence;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Shared.Wrapper;
 
 namespace TaskManager.Application.Features.TaskManager.Tasks.Commands;
@@ -63,3 +65,25 @@ internal class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand, Res
         }
     }
 }
+public class UpdateTaskCommandValidator : CustomValidator<UpdateTaskCommand>
+{
+    public UpdateTaskCommandValidator()
+    {
+        RuleFor(u => u.Title).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(u => u.Description).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Priority).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.CreationDate).Cascade(CascadeMode.Stop)
+            .NotNull()
+            .NotEmpty();
+
+        RuleFor(p => p.AssignedTo).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+    }
+}
+

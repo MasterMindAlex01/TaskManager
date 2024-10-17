@@ -1,10 +1,12 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
 using TaskManager.Application.Common.Persistence.Users;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Domain.Tools;
 using TaskManager.Shared.Wrapper;
 
@@ -78,5 +80,19 @@ internal class GetTokenQueryHandler : IRequestHandler<GetTokenQuery, Result<Toke
         {
             AccessToken = jwt
         }, "Ok");
+    }
+}
+
+public class GetTokenQueryValidator : CustomValidator<GetTokenQuery>
+{
+    public GetTokenQueryValidator()
+    {
+        RuleFor(u => u.UserName).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
+
+        RuleFor(u => u.Password).Cascade(CascadeMode.Stop)
+            .NotEmpty()
+            .MinimumLength(6);
     }
 }

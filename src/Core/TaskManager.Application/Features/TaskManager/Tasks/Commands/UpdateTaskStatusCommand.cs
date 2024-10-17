@@ -1,5 +1,7 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using TaskManager.Application.Common.Persistence;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Shared.Wrapper;
 
 namespace TaskManager.Application.Features.TaskManager.Tasks.Commands;
@@ -41,5 +43,13 @@ internal class UpdateTaskStatusCommandHandler : IRequestHandler<UpdateTaskStatus
 
             return await Result<Guid>.FailAsync("Error");
         }
+    }
+}
+public class UpdateTaskStatusCommandValidator : CustomValidator<UpdateTaskStatusCommand>
+{
+    public UpdateTaskStatusCommandValidator()
+    {
+        RuleFor(u => u.Status).Cascade(CascadeMode.Stop)
+            .NotEmpty();
     }
 }

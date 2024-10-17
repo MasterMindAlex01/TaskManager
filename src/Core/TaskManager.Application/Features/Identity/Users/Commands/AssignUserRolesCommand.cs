@@ -1,7 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using TaskManager.Application.Common.Persistence;
 using TaskManager.Application.Common.Persistence.Roles;
 using TaskManager.Application.Common.Persistence.Users;
+using TaskManager.Application.Common.Validation;
 using TaskManager.Domain.Common.Events;
 using TaskManager.Domain.Identity;
 using TaskManager.Shared.Wrapper;
@@ -35,7 +37,7 @@ internal class AssignUserRolesCommandHandler : IRequestHandler<AssignUserRolesCo
         try
         {
             var user = await _userRepository.GetUserByIdWithRolesAsync(command.UserId);
-            if (user == null) 
+            if (user == null)
             {
                 return await Result<Guid>.FailAsync("user not found");
             }
@@ -62,5 +64,15 @@ internal class AssignUserRolesCommandHandler : IRequestHandler<AssignUserRolesCo
         {
             return await Result<Guid>.FailAsync(ex.Message);
         }
+    }
+
+}
+
+public class AssignUserRolesCommandValidator : CustomValidator<AssignUserRolesCommand>
+{
+    public AssignUserRolesCommandValidator()
+    {
+        RuleFor(p => p.RoleIdList).Cascade(CascadeMode.Stop)
+            .NotEmpty();
     }
 }

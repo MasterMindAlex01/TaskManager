@@ -1,6 +1,9 @@
-﻿using MediatR;
+﻿using FluentValidation;
+using MediatR;
 using TaskManager.Application.Common.Interfaces;
 using TaskManager.Application.Common.Persistence;
+using TaskManager.Application.Common.Validation;
+using TaskManager.Application.Features.Identity.Users.Commands;
 using TaskManager.Shared.Wrapper;
 
 namespace TaskManager.Application.Features.TaskManager.Tasks.Commands;
@@ -51,5 +54,23 @@ internal class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, Res
 
             return await Result<Guid>.FailAsync("Error");
         }
+    }
+}
+
+public class CreateTaskCommandValidator : CustomValidator<CreateTaskCommand>
+{
+    public CreateTaskCommandValidator()
+    {
+        RuleFor(u => u.Title).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(u => u.Description).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.Priority).Cascade(CascadeMode.Stop)
+            .NotEmpty();
+
+        RuleFor(p => p.AssignedTo).Cascade(CascadeMode.Stop)
+            .NotEmpty();
     }
 }
